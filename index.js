@@ -33,3 +33,25 @@ document.getElementById("start-button").addEventListener("click", () => {
   typedValueElement.focus();
   startTime = new Date().getTime();
 });
+typedValueElement.addEventListener("input", () => {
+  const currentword = words[wordIndex];
+  const typedValue = typedValueElement.value;
+  if (typedValue === currentword && wordIndex === words.length - 1) {
+    const elapsedTime = new Date().getTime() - startTime;
+    const message = `Congratulations! You finished in ${
+      elapsedTime / 1000
+    } seconds.`;
+    messageElement.innerText = message;
+  } else if (typedValue.endsWith(" ") && typedValue.trim() === currentword) {
+    typedValueElement.value = "";
+    wordIndex++;
+    for (const wordElement of quoteElement.childNodes) {
+      wordElement.className = "";
+    }
+    quoteElement.childNodes[wordIndex].className = "highlight";
+  } else if (currentword.startsWith(typedValue)) {
+    typedValueElement.className = "";
+  } else {
+    typedValueElement.className = "error";
+  }
+});
