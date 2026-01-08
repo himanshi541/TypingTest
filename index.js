@@ -1,5 +1,3 @@
-// inside script.js
-// all of our quotes
 const quotes = [
   "When you have eliminated the impossible, whatever remains, however improbable, must be the truth.",
   "There is nothing more deceptive than an obvious fact.",
@@ -9,49 +7,83 @@ const quotes = [
   "Nothing clears up a case so much as stating it to another person.",
   "Education never ends, Watson. It is a series of lessons, with the greatest for the last.",
 ];
-// store the list of words and the index of the word the player is currently typing
-let words = [];
-let wordIndex = 0;
-// the starting time
-let startTime = Date.now();
-// page elements
-const quoteElement = document.getElementById("quote");
-const messageElement = document.getElementById("message");
-const typedValueElement = document.getElementById("typed-value");
-document.getElementById("startbutton").addEventListener("click", () => {
-  const quoteIndex = Math.floor(Math.random() * quotes.length);
-  const quote = quotes[quoteIndex];
-  words = quote.split(" ");
-  wordIndex = 0;
-  const spanwords = words.map(function (word) {
-    return `<span>${word}</span>`;
+
+//States
+let words = 0;
+let wordsIndex = 0;
+let startTime = 0;
+
+//UI elements
+const quoteElement = document.querySelector("#quote");
+const messageElement = document.querySelector("#message");
+const typedValueELement = document.querySelector("#typed-value");
+const startButton = document.querySelector("#startbutton");
+
+//Message system
+const message = {
+  success: (seconds) =>
+    `Cpngralutaions! You finished in ${seconds.toFixed(2)} seconds.`,
+  error: "Oops! There is a mistake.",
+  start: "Start typing to begin the test.",
+};
+
+//Utility:pick a random quote
+const getRandomquote = () => quotes[Math.floor(Math.random() * quotes.length)];
+
+//Utility:render quote as spans
+const renderQuote = (quote) => {
+  quoteElement.innerHTML = quote
+    .split(" ")
+    .map(
+      (word, i) => `<span ${i === 0 ? 'class="highlight"' : '"'}>${word}</span>`
+    )
+    .join(" ");
+};
+//highlights the current words
+const highlightWord = (index) => {
+  [...quoteElement.children].forEach((el, i) => {
+    el.classList.toggle("highlight", i === index);
   });
-  quoteElement.innerHTML = spanwords.join("");
-  quoteElement.childNodes[0].className = "highlight";
-  messageElement.innerText = "";
-  typedValueElement.value = "";
-  typedValueElement.focus();
-  startTime = new Date().getTime();
-});
-typedValueElement.addEventListener("input", () => {
-  const currentword = words[wordIndex];
-  const typedValue = typedValueElement.value;
-  if (typedValue === currentword && wordIndex === words.length - 1) {
-    const elapsedTime = new Date().getTime() - startTime;
-    const message = `Congratulations! You finished in ${
-      elapsedTime / 1000
-    } seconds.`;
-    messageElement.innerText = message;
-  } else if (typedValue.endsWith(" ") && typedValue.trim() === currentword) {
-    typedValueElement.value = "";
-    wordIndex++;
-    for (const wordElement of quoteElement.childNodes) {
-      wordElement.className = "";
-    }
-    quoteElement.childNodes[wordIndex].className = "highlight";
-  } else if (currentword.startsWith(typedValue)) {
-    typedValueElement.className = "";
+};
+
+//Game Starts
+const startGame = () => {
+  const quote = getRandomquote();
+  words = quote.split(" ");
+  wordsIndex = 0;
+  renderQuote(quote);
+
+  messageElement.textContent = message.start;
+  typedValueELement.value = "";
+  typedValueELement.focus();
+  startTime = Date.now();
+};
+
+//TYping Logic
+const handltyping = () => {
+  const currentWord = words[wordsIndex];
+  const typedValue = typedValueELement.value;
+
+  if (typedValue === currentWord && wordsIndex === words.length - 1) {
+    //Game Finished
+    const elapsedTime = (Date.now() - startTime) / 1000;
+    messageElement.textContent = message.success(elapsedTime);
+    typedValueELement.disabled = true;
+  } else if (typedValue.endsWith(" ") && typedValue.trim() === currentWord) {
+    //Correct Word
+    typedValueELement.value = "";
+    wordsIndex++;
+    highlightWord(wordsIndex);
+  } else if (currentWord.startsWith(typedValue)) {
+    typedValueELement.classList.remove("error");
   } else {
-    typedValueElement.className = "error";
+    typedValueELement.classList.add("error");
+    messageElement.textContent = message.error;
   }
-});
+};
+
+// Event Listeners
+startButton.addEventListener("click", startGame);
+typedValueElement.addEventListener("input", handleTyping);
+
+messageElement.textContent = " Click Start to begin!";
