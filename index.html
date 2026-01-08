@@ -5,15 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Typing Test</title>
     <link rel="stylesheet" href="stylesheet.css" />
+    <style>
+      #datetime {
+        text-align: center;
+        margin-bottom: 1rem;
+        font-size: 1.1rem;
+        color: #2d7c6f;
+      }
+    </style>
   </head>
   <body>
     <h1>Start Typing Test</h1>
     <p id="quote"></p>
     <p id="message"></p>
     <div>
-      <input type="text" id="typed-value" />
-      <button id="startbutton">Start</button>
+      <label class="hidden=label" for="typed-value">Current Word</label>
+      <input
+        type="text"
+        label="current-word"
+        id="typed-value"
+        placeholder="Type here..."
+      />
     </div>
-    <script src="index.js"></script>
+    <div>
+      <button id="startbutton" type="button">Start</button>
+    </div>
+    <div id="datetime">
+      <span id="current-time"></span>
+      <span id="current-date"></span>
+      &nbsp;|&nbsp;
+      <span id="current-time"></span>
+    </div>
+    <script src="index.js">
+      function updatetime(){
+        const now=new Date();
+        const day=String(now.getDate().padStart(2,'0'));
+        const month=String(now.getMonth()+1).padStart(2,'0');
+        const year=now.getFullYear();
+        const formatthedate=`${day}/${month}/${year}`;
+
+        let hour=now.getHours();
+        const minutes=String (now.getMinutes()).padStart(2,'0');
+        const ampm=hour>=12?'PM':'AM' ;
+        hour=hour%12;
+        hour=hour?hour:12;
+        const formattedTime=`${hours}:${minutes}${ampm}`;
+        document.getElementById('current-date').textContent=formatthedate;
+        document.getElementById('current-time').textContent=formattedTime;
+      }
+      updatetime();
+      setInterval(updatetime,60000);
+    </script>
   </body>
 </html>
