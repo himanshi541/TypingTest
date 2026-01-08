@@ -16,13 +16,13 @@ let startTime = 0;
 //UI elements
 const quoteElement = document.querySelector("#quote");
 const messageElement = document.querySelector("#message");
-const typedValueELement = document.querySelector("#typed-value");
-const startButton = document.querySelector("#startbutton");
+const typedValueElement = document.querySelector("#typed-value");
+const startButton = document.querySelector("#start");
 
 //Message system
 const message = {
   success: (seconds) =>
-    `Cpngralutaions! You finished in ${seconds.toFixed(2)} seconds.`,
+    `Congratulations! You finished in ${seconds.toFixed(2)} seconds.`,
   error: "Oops! There is a mistake.",
   start: "Start typing to begin the test.",
 };
@@ -34,9 +34,7 @@ const getRandomquote = () => quotes[Math.floor(Math.random() * quotes.length)];
 const renderQuote = (quote) => {
   quoteElement.innerHTML = quote
     .split(" ")
-    .map(
-      (word, i) => `<span ${i === 0 ? 'class="highlight"' : '"'}>${word}</span>`
-    )
+    .map((word, i) => `<span${i === 0 ? ' class="highlight"' : ''}>${word}</span>`)
     .join(" ");
 };
 //highlights the current words
@@ -54,30 +52,30 @@ const startGame = () => {
   renderQuote(quote);
 
   messageElement.textContent = message.start;
-  typedValueELement.value = "";
-  typedValueELement.focus();
+  typedValueElement.value = "";
+  typedValueElement.focus();
   startTime = Date.now();
 };
 
-//TYping Logic
-const handltyping = () => {
+//Typing Logic
+const handleTyping = () => {
   const currentWord = words[wordsIndex];
-  const typedValue = typedValueELement.value;
+  const typedValue = typedValueElement.value;
 
   if (typedValue === currentWord && wordsIndex === words.length - 1) {
     //Game Finished
     const elapsedTime = (Date.now() - startTime) / 1000;
     messageElement.textContent = message.success(elapsedTime);
-    typedValueELement.disabled = true;
+    typedValueElement.disabled = true;
   } else if (typedValue.endsWith(" ") && typedValue.trim() === currentWord) {
     //Correct Word
-    typedValueELement.value = "";
+    typedValueElement.value = "";
     wordsIndex++;
     highlightWord(wordsIndex);
   } else if (currentWord.startsWith(typedValue)) {
-    typedValueELement.classList.remove("error");
+    typedValueElement.classList.remove("error");
   } else {
-    typedValueELement.classList.add("error");
+    typedValueElement.classList.add("error");
     messageElement.textContent = message.error;
   }
 };
@@ -86,4 +84,4 @@ const handltyping = () => {
 startButton.addEventListener("click", startGame);
 typedValueElement.addEventListener("input", handleTyping);
 
-messageElement.textContent = " Click Start to begin!";
+messageElement.textContent = message.start;

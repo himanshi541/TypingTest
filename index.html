@@ -19,42 +19,39 @@
     <p id="quote"></p>
     <p id="message"></p>
     <div>
-      <label class="hidden=label" for="typed-value">Current Word</label>
-      <input
-        type="text"
-        label="current-word"
-        id="typed-value"
-        placeholder="Type here..."
-      />
+      <label class="hidden-label" for="typed-value">Current Word</label>
+      <input type="text" id="typed-value" placeholder="Type here..." />
     </div>
     <div>
-      <button id="startbutton" type="button">Start</button>
+      <button id="start" type="button">Start</button>
     </div>
     <div id="datetime">
-      <span id="current-time"></span>
       <span id="current-date"></span>
       &nbsp;|&nbsp;
       <span id="current-time"></span>
     </div>
-    <script src="index.js">
-      function updatetime(){
-        const now=new Date();
-        const day=String(now.getDate().padStart(2,'0'));
-        const month=String(now.getMonth()+1).padStart(2,'0');
-        const year=now.getFullYear();
-        const formatthedate=`${day}/${month}/${year}`;
+    <script src="index.js"></script>
+    <script>
+      function updateTime() {
+        const now = new Date();
+        const day = String(now.getDate()).padStart(2, "0");
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const year = now.getFullYear();
+        const formattedDate = `${day}/${month}/${year}`;
 
-        let hour=now.getHours();
-        const minutes=String (now.getMinutes()).padStart(2,'0');
-        const ampm=hour>=12?'PM':'AM' ;
-        hour=hour%12;
-        hour=hour?hour:12;
-        const formattedTime=`${hours}:${minutes}${ampm}`;
-        document.getElementById('current-date').textContent=formatthedate;
-        document.getElementById('current-time').textContent=formattedTime;
+        let hour = now.getHours();
+        const minutes = String(now.getMinutes()).padStart(2, "0");
+        const ampm = hour >= 12 ? "PM" : "AM";
+        hour = hour % 12;
+        hour = hour ? hour : 12;
+        const formattedTime = `${hour}:${minutes} ${ampm}`;
+
+        document.getElementById("current-date").textContent = formattedDate;
+        document.getElementById("current-time").textContent = formattedTime;
       }
-      updatetime();
-      setInterval(updatetime,60000);
+
+      updateTime();
+      setInterval(updateTime, 60000);
     </script>
   </body>
 </html>
